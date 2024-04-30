@@ -79,6 +79,7 @@ class Actor(nn.Module):
 class MetaworldSparse(Env):
 	def __init__(self, env_id,max_episode_steps, text_string=None, time=False, video_path=None, rank=0, human=True):
 		super(MetaworldSparse,self)
+		self.rank=rank
 		door_open_goal_hidden_cls = ALL_V2_ENVIRONMENTS_GOAL_HIDDEN[env_id]
 		env = door_open_goal_hidden_cls(seed=rank)
 		self.env = TimeLimit(env, max_episode_steps=max_episode_steps)#steps=128
@@ -163,7 +164,7 @@ class MetaworldSparse(Env):
 			#print("INSIDE")
 			frames = self.preprocess_metaworld(self.past_observations)
 			fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-			out = cv2.VideoWriter('best_model_button_press_ours_deep80_64_16_st.mp4', fourcc, 20, (640, 480))
+			out = cv2.VideoWriter(f'best_model_button_press_TAMER_det_{self.rank}.mp4', fourcc, 20, (640, 480))
 
 			for frame in self.past_observations:
 				# Convert frames to BGR format for OpenCV if necessary
@@ -197,9 +198,9 @@ def t(x):
 	x = np.array(x) if not isinstance(x, np.ndarray) else x
 	return torch.from_numpy(x).float()
 
-def visualize_policy(env_id, model_path,a2c,det=True):
+def visualize_policy(env_id, model_path,a2c,rank,det=True):
 	#env = MetaworldSparse(env_id=env_id, video_path="./gifs/human_opening_door.gif", time=True, rank=0, human=True)
-	env = MetaworldSparse(env_id=env_id,max_episode_steps=128 ,text_string="robot closing green drawer", time=True, rank=0, human=True)
+	env = MetaworldSparse(env_id=env_id,max_episode_steps=128 ,text_string="robot closing green drawer", time=True, rank=rank, human=True)
 	env = TimeLimit(env, max_episode_steps=128)
 	if a2c:
 		state_dim = env.observation_space.shape[0]
@@ -232,5 +233,7 @@ def visualize_policy(env_id, model_path,a2c,det=True):
 
 if __name__ == "__main__":
 	env_id = "button-press-v2-goal-hidden"  # Replace with your environment ID
-	model_path = "/home/kurt/IRL/RoboCLIP/metaworld/button-press-v2-goal-hidden_interactivebutton_press_ours_deep80_64_16/best_model_st.pth"  # home/kurt/IRL/RoboCLIP/metaworld/drawer-open-v2-goal-hidden_interactiveTESTa2cT_timed_128_VLM_deeper150_55grad_001beta_w_eval/best_model.pth
-	visualize_policy(env_id, model_path,a2c=True,det=True)
+	model_path = "/home/kurtc/IRL/RoboCLIP_base/metaworld/button-press-v2-goal-hidden_interactivebutton_press_TAMER/best_model_det.pth"  # home/kurt/IRL/RoboCLIP/metaworld/drawer-open-v2-goal-hidden_interactiveTESTa2cT_timed_128_VLM_deeper150_55grad_001beta_w_eval/best_model.pth
+	for i in range (0,10):
+		print("rank: ",i)
+		visualize_policy(env_id, model_path,a2c=True,rank=i,det=True)

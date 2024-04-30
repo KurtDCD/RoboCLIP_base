@@ -516,22 +516,22 @@ class Runner():
 						#new_instruction="robot arm closing black box by pushing door handle"
 						#new_instruction="robot moving toward green drawer handle to pull it"
 						#new_instruction="robot pushing green drawer by the handle"
-						new_instruction="robot moving straight forward toward red button to push it against the yellow wall"
+						#new_instruction="robot moving straight forward toward red button to push it against the yellow wall"
 					elif (self.env.get_counter()-1)==64:
 						#new_instruction="robot arm moving left closing black box door by pushing door handle"
 						#new_instruction="robot gripper close to the green drawer handle to grip it"
 						#new_instruction="robot closing green drawer by continuously sliding green drawer"
-						new_instruction="robot closer to red button by moving straight toward red button"
+						#new_instruction="robot closer to red button by moving straight toward red button"
 					elif (self.env.get_counter()-1)==96:
 						#new_instruction="robot arm moving left closing black box door by pushing door handle"
 						#new_instruction="robot gripper gripping green drawer handle pulling green drawer open"
-						#new_instruction="robot closing green drawer by continuously sliding green drawer"
-						new_instruction="robot directly in front of red button pushing red button against yellow wall"
+						new_instruction="robot closing green drawer by continuously sliding green drawer"
+						#new_instruction="robot directly in front of red button pushing red button against yellow wall"
 					elif (self.env.get_counter()-1)==128:
 						#new_instruction="robot closing black box completely"
 						#new_instruction="robot pulling green drawer completely open by the handle"
 						#new_instruction="robot with green drawer completely closed"
-						new_instruction="robot pushing red button against the yellow wall"'''
+						#new_instruction="robot pushing red button against the yellow wall"'''
 					# Process new instruction
 					fb = self.env.get_similarity(new_instruction,False)
 					if args.bounded==1:
@@ -577,7 +577,7 @@ class Runner():
 		)
 
 		if fb != 0:
-			ca = CreditAssignment(norm(loc=0, scale=16))#norm(loc=0,scale=16) for decaying into the past
+			ca = CreditAssignment(norm(loc=0,scale=16))#norm(loc=0,scale=16) for decaying into the past, uniform(loc=0,scale=32) for same credit
 			state, action, credit = [], [], []
 			for win in self.sliding_window:
 				if h_time-win["s_start"]>31:
